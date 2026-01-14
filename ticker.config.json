@@ -1,0 +1,147 @@
+{
+  "app": {
+    "title": "Cursor Live Ticker",
+    "refreshIntervalMs": 5000,
+    "timezone": "UTC"
+  },
+  "data": {
+    "usageEvents": {
+      "pollIntervalMs": 60000,
+      "pageSize": 500,
+      "maxPages": 40,
+      "shortWindowMinutes": 15,
+      "longWindowMinutes": 60
+    },
+    "dailyUsage": {
+      "pollIntervalMs": 300000,
+      "lookbackDays": 7
+    },
+    "spend": {
+      "pollIntervalMs": 300000,
+      "pageSize": 100
+    },
+    "members": {
+      "pollIntervalMs": 3600000
+    }
+  },
+  "dashboard": {
+    "columns": 12,
+    "gapPx": 18,
+    "widgets": [
+      {
+        "id": "tokens_today",
+        "type": "bigNumber",
+        "label": "Tokens Today",
+        "valueKey": "tokensToday.total",
+        "format": "compact",
+        "colSpan": 6,
+        "rowSpan": 2
+      },
+      {
+        "id": "tokens_15m",
+        "type": "bigNumber",
+        "label": "Tokens (15m)",
+        "valueKey": "tokensLast15m.total",
+        "format": "compact",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "tokens_60m",
+        "type": "bigNumber",
+        "label": "Tokens (60m)",
+        "valueKey": "tokensLast60m.total",
+        "format": "compact",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "cost_today",
+        "type": "bigNumber",
+        "label": "Cost Today",
+        "valueKey": "costToday.usd",
+        "format": "currency",
+        "currency": "USD",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "active_users",
+        "type": "bigNumber",
+        "label": "Active Users (60m)",
+        "valueKey": "activeUsersLast60m",
+        "format": "integer",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "cache_share",
+        "type": "gauge",
+        "label": "Cache Read Share (60m)",
+        "valueKey": "cacheReadShareLast60m",
+        "format": "percent",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "accept_rate",
+        "type": "gauge",
+        "label": "AI Accept Rate (Today)",
+        "valueKey": "acceptanceRateToday",
+        "format": "percent",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "spark_tokens",
+        "type": "sparkline",
+        "label": "Tokens / min (60m)",
+        "seriesKey": "tokensPerMinuteLast60m",
+        "valueField": "tokens",
+        "colSpan": 6,
+        "rowSpan": 1
+      },
+      {
+        "id": "top_models",
+        "type": "barList",
+        "label": "Top Models (60m)",
+        "itemsKey": "topModelsLast60m",
+        "labelField": "model",
+        "valueField": "tokens",
+        "maxItems": 6,
+        "colSpan": 6,
+        "rowSpan": 2
+      },
+      {
+        "id": "top_users",
+        "type": "barList",
+        "label": "Top Users (60m)",
+        "itemsKey": "topUsersLast60m",
+        "labelField": "email",
+        "valueField": "tokens",
+        "maxItems": 6,
+        "colSpan": 6,
+        "rowSpan": 2
+      },
+      {
+        "id": "month_spend",
+        "type": "bigNumber",
+        "label": "Spend (Month)",
+        "valueKey": "monthToDateSpend.usd",
+        "format": "currency",
+        "currency": "USD",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "lines_added",
+        "type": "bigNumber",
+        "label": "Lines Added (Today)",
+        "valueKey": "linesAddedToday",
+        "format": "integer",
+        "colSpan": 3,
+        "rowSpan": 1
+      }
+    ]
+  }
+}

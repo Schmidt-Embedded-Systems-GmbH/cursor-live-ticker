@@ -1,0 +1,8 @@
+services:
+  ticker:
+    build: .
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "${PORT:-4000}:4000"
