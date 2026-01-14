@@ -8,12 +8,13 @@ export default function BigNumberCard(props: {
   format: 'integer' | 'compact' | 'currency';
   currency?: string;
   hint?: string;
+  large?: boolean;
 }) {
   const raw = props.value ?? 0;
   const tweened = useTweenedNumber(raw);
 
   return (
-    <WidgetFrame title={props.title} subtitle={props.hint}>
+    <WidgetFrame title={props.title} subtitle={props.hint} size={props.large ? 'large' : undefined}>
       <div className="bigNumber">
         <div className="bigNumber__value">
           {props.value == null ? '—' : formatValue(tweened, props.format, { currency: props.currency })}

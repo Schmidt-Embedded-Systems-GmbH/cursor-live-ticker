@@ -95,9 +95,10 @@ body {
 .dashboard {
   flex: 1;
   display: grid;
-  grid-auto-rows: minmax(120px, auto);
-  align-content: start;
+  grid-auto-rows: minmax(0, 1fr);
   overflow: hidden;
+  height: 0;
+  min-height: 0;
 }
 
 .widget {
@@ -110,6 +111,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: 100%;
 }
 
 .widget__header {
@@ -143,12 +145,17 @@ body {
 }
 
 .bigNumber__value {
-  font-size: 64px;
+  font-size: clamp(32px, 5vw, 64px);
   font-weight: 850;
   letter-spacing: -0.02em;
   line-height: 1;
   color: rgba(255, 255, 255, 0.96);
   text-shadow: 0 0 22px rgba(120, 180, 255, 0.18);
+}
+
+/* Larger bigNumber for hero widgets (2+ row span) */
+.widget[data-size="large"] .bigNumber__value {
+  font-size: clamp(48px, 7vw, 80px);
 }
 
 .gauge {
@@ -184,28 +191,31 @@ body {
 
 .barList {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
 .barList__row {
   display: grid;
-  grid-template-columns: 1.3fr 2.4fr 0.7fr;
+  grid-template-columns: 1.4fr 1.8fr 0.5fr;
   gap: 10px;
   align-items: center;
 }
 
 .barList__label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .barList__bar {
-  height: 12px;
+  height: 14px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.10);
@@ -215,14 +225,15 @@ body {
 .barList__barFill {
   height: 100%;
   border-radius: 999px;
-  background: rgba(120, 180, 255, 0.75);
+  background: linear-gradient(90deg, rgba(120, 180, 255, 0.8), rgba(100, 160, 255, 0.65));
   transition: width 650ms cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 .barList__value {
   text-align: right;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
   font-variant-numeric: tabular-nums;
 }
 
@@ -230,14 +241,16 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .sparkline__bars {
   width: 100%;
-  height: 96px;
+  flex: 1;
+  min-height: 80px;
   display: flex;
-  gap: 2px;
+  gap: 3px;
   align-items: flex-end;
 }
 
@@ -260,4 +273,72 @@ body {
 
 .muted {
   color: var(--muted);
+}
+
+/* Podium */
+.podium {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 0;
+}
+
+.podium__place {
+  flex: 1;
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.podium__user {
+  text-align: center;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.podium__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.podium__tokens {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.podium__empty {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.podium__bar {
+  width: 100%;
+  border-radius: 10px 10px 4px 4px;
+  border: 1px solid;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  transition: height 600ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.podium__rank {
+  font-size: 28px;
+  font-weight: 800;
+  opacity: 0.95;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }

@@ -25,7 +25,7 @@ function resolveConfigFile(filename: string): string {
 
 const WidgetSchema = z.object({
   id: z.string().min(1),
-  type: z.enum(['bigNumber', 'gauge', 'barList', 'sparkline']),
+  type: z.enum(['bigNumber', 'gauge', 'barList', 'sparkline', 'podium']),
   label: z.string().min(1),
   colSpan: z.number().int().positive(),
   rowSpan: z.number().int().positive(),

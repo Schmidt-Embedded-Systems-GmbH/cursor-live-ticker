@@ -4,7 +4,8 @@ export type Widget =
   | BigNumberWidget
   | GaugeWidget
   | BarListWidget
-  | SparklineWidget;
+  | SparklineWidget
+  | PodiumWidget;
 
 export interface BigNumberWidget {
   id: string;
@@ -44,6 +45,17 @@ export interface SparklineWidget {
   type: 'sparkline';
   label: string;
   seriesKey: string;
+  valueField: string;
+  colSpan: number;
+  rowSpan: number;
+}
+
+export interface PodiumWidget {
+  id: string;
+  type: 'podium';
+  label: string;
+  itemsKey: string;
+  labelField: string;
   valueField: string;
   colSpan: number;
   rowSpan: number;

@@ -4,9 +4,10 @@ export default function WidgetFrame(props: {
   title: string;
   subtitle?: string;
   children: ReactNode;
+  size?: 'large';
 }) {
   return (
-    <section className="widget">
+    <section className="widget" data-size={props.size}>
       <div className="widget__header">
         <div className="widget__title">{props.title}</div>
         {props.subtitle ? <div className="widget__subtitle">{props.subtitle}</div> : null}

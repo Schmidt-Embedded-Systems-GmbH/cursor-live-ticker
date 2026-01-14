@@ -4,6 +4,7 @@ import BigNumberCard from './BigNumberCard';
 import GaugeCard from './GaugeCard';
 import BarListCard from './BarListCard';
 import SparklineCard from './SparklineCard';
+import PodiumCard from './PodiumCard';
 
 function asNumber(x: unknown): number | null {
   if (typeof x === 'number' && Number.isFinite(x)) return x;
@@ -19,6 +20,7 @@ export default function WidgetRenderer(props: {
 
   if (w.type === 'bigNumber') {
     const raw = getByPath(props.stats, w.valueKey);
+    const isLarge = w.rowSpan >= 2;
     return (
       <div style={{ gridColumn: `span ${w.colSpan}`, gridRow: `span ${w.rowSpan}` }}>
         <BigNumberCard
@@ -26,6 +28,7 @@ export default function WidgetRenderer(props: {
           value={asNumber(raw)}
           format={w.format}
           currency={w.currency}
+          large={isLarge}
         />
       </div>
     );
@@ -69,6 +72,26 @@ export default function WidgetRenderer(props: {
     return (
       <div style={{ gridColumn: `span ${w.colSpan}`, gridRow: `span ${w.rowSpan}` }}>
         <SparklineCard title={w.label} values={values} />
+      </div>
+    );
+  }
+
+  if (w.type === 'podium') {
+    const raw = getByPath(props.stats, w.itemsKey);
+
+    const arr = Array.isArray(raw) ? raw : [];
+
+    const items = arr
+      .map((it: any) => ({
+        label: String(it?.[w.labelField] ?? '—'),
+        value: Number(it?.[w.valueField] ?? 0),
+      }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3);
+
+    return (
+      <div style={{ gridColumn: `span ${w.colSpan}`, gridRow: `span ${w.rowSpan}` }}>
+        <PodiumCard title={w.label} items={items} />
       </div>
     );
   }

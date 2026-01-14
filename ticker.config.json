@@ -26,7 +26,7 @@
   },
   "dashboard": {
     "columns": 12,
-    "gapPx": 18,
+    "gapPx": 16,
     "widgets": [
       {
         "id": "tokens_today",
@@ -34,7 +34,26 @@
         "label": "Tokens Today",
         "valueKey": "tokensToday.total",
         "format": "compact",
-        "colSpan": 6,
+        "colSpan": 4,
+        "rowSpan": 2
+      },
+      {
+        "id": "spark_tokens",
+        "type": "sparkline",
+        "label": "Tokens / min (60m)",
+        "seriesKey": "tokensPerMinuteLast60m",
+        "valueField": "tokens",
+        "colSpan": 4,
+        "rowSpan": 2
+      },
+      {
+        "id": "top_users",
+        "type": "podium",
+        "label": "Top Users (60m)",
+        "itemsKey": "topUsersLast60m",
+        "labelField": "email",
+        "valueField": "tokens",
+        "colSpan": 4,
         "rowSpan": 2
       },
       {
@@ -56,12 +75,11 @@
         "rowSpan": 1
       },
       {
-        "id": "cost_today",
+        "id": "lines_added",
         "type": "bigNumber",
-        "label": "Cost Today",
-        "valueKey": "costToday.usd",
-        "format": "currency",
-        "currency": "USD",
+        "label": "Lines Added (Today)",
+        "valueKey": "linesAddedToday",
+        "format": "integer",
         "colSpan": 3,
         "rowSpan": 1
       },
@@ -75,53 +93,14 @@
         "rowSpan": 1
       },
       {
-        "id": "cache_share",
-        "type": "gauge",
-        "label": "Cache Read Share (60m)",
-        "valueKey": "cacheReadShareLast60m",
-        "format": "percent",
+        "id": "cost_today",
+        "type": "bigNumber",
+        "label": "Cost Today",
+        "valueKey": "costToday.usd",
+        "format": "currency",
+        "currency": "USD",
         "colSpan": 3,
         "rowSpan": 1
-      },
-      {
-        "id": "accept_rate",
-        "type": "gauge",
-        "label": "AI Accept Rate (Today)",
-        "valueKey": "acceptanceRateToday",
-        "format": "percent",
-        "colSpan": 3,
-        "rowSpan": 1
-      },
-      {
-        "id": "spark_tokens",
-        "type": "sparkline",
-        "label": "Tokens / min (60m)",
-        "seriesKey": "tokensPerMinuteLast60m",
-        "valueField": "tokens",
-        "colSpan": 6,
-        "rowSpan": 1
-      },
-      {
-        "id": "top_models",
-        "type": "barList",
-        "label": "Top Models (60m)",
-        "itemsKey": "topModelsLast60m",
-        "labelField": "model",
-        "valueField": "tokens",
-        "maxItems": 6,
-        "colSpan": 6,
-        "rowSpan": 2
-      },
-      {
-        "id": "top_users",
-        "type": "barList",
-        "label": "Top Users (60m)",
-        "itemsKey": "topUsersLast60m",
-        "labelField": "email",
-        "valueField": "tokens",
-        "maxItems": 6,
-        "colSpan": 6,
-        "rowSpan": 2
       },
       {
         "id": "month_spend",
@@ -134,11 +113,31 @@
         "rowSpan": 1
       },
       {
-        "id": "lines_added",
-        "type": "bigNumber",
-        "label": "Lines Added (Today)",
-        "valueKey": "linesAddedToday",
-        "format": "integer",
+        "id": "top_models",
+        "type": "barList",
+        "label": "Top Models (60m)",
+        "itemsKey": "topModelsLast60m",
+        "labelField": "model",
+        "valueField": "tokens",
+        "maxItems": 8,
+        "colSpan": 6,
+        "rowSpan": 2
+      },
+      {
+        "id": "accept_rate",
+        "type": "gauge",
+        "label": "AI Accept Rate (Today)",
+        "valueKey": "acceptanceRateToday",
+        "format": "percent",
+        "colSpan": 3,
+        "rowSpan": 1
+      },
+      {
+        "id": "cache_share",
+        "type": "gauge",
+        "label": "Cache Read Share (60m)",
+        "valueKey": "cacheReadShareLast60m",
+        "format": "percent",
         "colSpan": 3,
         "rowSpan": 1
       }
