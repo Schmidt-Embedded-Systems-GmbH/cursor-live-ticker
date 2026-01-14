@@ -49,6 +49,18 @@ docker compose up --build
 
 Open: **http://localhost:4000**
 
+### Docker notes / troubleshooting
+
+- **First build can take a while**: Docker may need to download the Node base image layers the first time, which can look like a “hang”.
+- **If the build looks stuck**: run a plain-progress build to see where time is going:
+
+```bash
+docker compose build --no-cache --progress=plain
+```
+
+- **Build context is intentionally small**: this repo includes a `.dockerignore` so `node_modules/`, `dist/`, and `.env*` are not sent into the Docker build context.
+- **Tip**: adding a lockfile (e.g. `package-lock.json`) makes Docker installs faster and deterministic.
+
 ---
 
 ## Quickstart (Node)
