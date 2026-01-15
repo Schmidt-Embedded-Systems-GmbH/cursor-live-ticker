@@ -3,6 +3,7 @@ import { fetchConfig, fetchStats } from './api';
 import type { StatsResponse, TickerConfig } from './types';
 import WidgetRenderer from './components/WidgetRenderer';
 import ErrorBanner from './components/ErrorBanner';
+import DailyStatsView from './components/DailyStatsView';
 
 function formatTime(ts: number): string {
   try {
@@ -16,11 +17,14 @@ function formatTime(ts: number): string {
   }
 }
 
+type ViewMode = 'live' | 'daily';
+
 export default function App() {
   const [config, setConfig] = useState<TickerConfig | null>(null);
   const [statsResp, setStatsResp] = useState<StatsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(0);
+  const [viewMode, setViewMode] = useState<ViewMode>('live');
   const lastFetchRef = useRef<number>(Date.now());
 
   // Load config once
@@ -105,26 +109,42 @@ export default function App() {
         </div>
 
         <div className="topbar__right">
-          <div className="pill">
-            <span className="dot" />
-            Live
+          <div className="viewToggle">
+            <button
+              className={`viewToggle__btn ${viewMode === 'live' ? 'viewToggle__btn--active' : ''}`}
+              onClick={() => setViewMode('live')}
+            >
+              <span className="dot" />
+              Live
+            </button>
+            <button
+              className={`viewToggle__btn ${viewMode === 'daily' ? 'viewToggle__btn--active' : ''}`}
+              onClick={() => setViewMode('daily')}
+            >
+              <span className="viewToggle__icon">📊</span>
+              Daily
+            </button>
           </div>
         </div>
       </header>
 
       {error ? <ErrorBanner message={error} /> : null}
 
-      <main
-        className="dashboard"
-        style={{
-          gridTemplateColumns: `repeat(${config?.dashboard.columns ?? 12}, 1fr)`,
-          gap: `${config?.dashboard.gapPx ?? 18}px`,
-        }}
-      >
-        {(config?.dashboard.widgets ?? []).map((w) => (
-          <WidgetRenderer key={w.id} widget={w} stats={stats} />
-        ))}
-      </main>
+      {viewMode === 'live' ? (
+        <main
+          className="dashboard"
+          style={{
+            gridTemplateColumns: `repeat(${config?.dashboard.columns ?? 12}, 1fr)`,
+            gap: `${config?.dashboard.gapPx ?? 18}px`,
+          }}
+        >
+          {(config?.dashboard.widgets ?? []).map((w) => (
+            <WidgetRenderer key={w.id} widget={w} stats={stats} />
+          ))}
+        </main>
+      ) : (
+        <DailyStatsView stats={stats} />
+      )}
 
       <footer className="footer">
         <div className="muted">Powered by Cursor Admin API · Tip: open in full screen for beamer/kiosk mode</div>
