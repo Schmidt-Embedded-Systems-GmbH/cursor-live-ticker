@@ -1,5 +1,6 @@
 import WidgetFrame from './WidgetFrame';
 import { formatValue } from '../utils/format';
+import { useMemo } from 'react';
 
 export type PodiumItem = { label: string; value: number };
 
@@ -84,8 +85,34 @@ export default function PodiumCard(props: { title: string; items: PodiumItem[] |
   const second = items[1] ?? null;
   const third = items[2] ?? null;
 
-  // Heights for the bars (1st tallest)
-  const heights = { 1: 100, 2: 72, 3: 50 };
+  // Calculate heights based on relative values
+  // 1st place is always max height, others scale proportionally
+  const maxHeight = 150;
+  const minHeight = 50; // Minimum height so bars are always visible
+
+  const heights = useMemo(() => {
+    const firstVal = first?.value ?? 0;
+    const secondVal = second?.value ?? 0;
+    const thirdVal = third?.value ?? 0;
+
+    if (firstVal === 0) {
+      // No data - use default heights
+      return { 1: maxHeight, 2: 70, 3: 45 };
+    }
+
+    // Scale relative to first place
+    const scaleHeight = (val: number) => {
+      if (val === 0) return minHeight;
+      const ratio = val / firstVal;
+      return Math.max(minHeight, Math.round(ratio * maxHeight));
+    };
+
+    return {
+      1: maxHeight,
+      2: secondVal > 0 ? scaleHeight(secondVal) : minHeight,
+      3: thirdVal > 0 ? scaleHeight(thirdVal) : minHeight,
+    };
+  }, [first, second, third]);
 
   return (
     <WidgetFrame title={props.title} subtitle={props.hint}>

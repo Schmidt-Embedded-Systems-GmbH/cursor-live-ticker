@@ -10,12 +10,22 @@ export default function SparklineCard(props: {
   title: string;
   values: number[] | null;
   hint?: string;
+  /** Total time window in minutes (default 60) */
+  windowMinutes?: number;
 }) {
   const values = props.values ?? [];
+  const windowMinutes = props.windowMinutes ?? 60;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const max = useMemo(() => Math.max(1, ...values), [values]);
   const mid = max / 2;
+
+  // Calculate minutes ago for a given bar index
+  const getMinutesAgo = (idx: number): number => {
+    if (values.length <= 1) return 0;
+    const minutesPerBar = windowMinutes / values.length;
+    return Math.round(windowMinutes - idx * minutesPerBar);
+  };
 
   return (
     <WidgetFrame title={props.title} subtitle={props.hint}>
@@ -31,7 +41,7 @@ export default function SparklineCard(props: {
               <span className="sparkline__yaxis-label">0</span>
             </div>
 
-            {/* Bars container */}
+            {/* Chart area (bars + x-axis) */}
             <div className="sparkline__chart">
               {/* Grid lines */}
               <div className="sparkline__gridlines">
@@ -45,6 +55,7 @@ export default function SparklineCard(props: {
                 {values.map((v, idx) => {
                   const h = Math.max(2, (v / max) * 100);
                   const isHovered = hoveredIndex === idx;
+                  const minutesAgo = getMinutesAgo(idx);
                   return (
                     <div
                       key={idx}
@@ -55,12 +66,22 @@ export default function SparklineCard(props: {
                     >
                       {isHovered && (
                         <div className="sparkline__tooltip">
-                          {formatCompact(v)}
+                          <span className="sparkline__tooltip-value">{formatCompact(v)}</span>
+                          <span className="sparkline__tooltip-time">
+                            {minutesAgo === 0 ? 'now' : `${minutesAgo}m ago`}
+                          </span>
                         </div>
                       )}
                     </div>
                   );
                 })}
+              </div>
+
+              {/* X-axis time labels */}
+              <div className="sparkline__xaxis">
+                <span className="sparkline__xaxis-label">-{windowMinutes}m</span>
+                <span className="sparkline__xaxis-label">-{Math.round(windowMinutes / 2)}m</span>
+                <span className="sparkline__xaxis-label">now</span>
               </div>
             </div>
           </>

@@ -57,6 +57,11 @@ body {
   color: var(--muted);
 }
 
+.countdown {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
 .topbar__right {
   display: flex;
   gap: 12px;
@@ -310,6 +315,19 @@ body {
   background: rgba(152, 255, 193, 0.95);
 }
 
+.sparkline__xaxis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.sparkline__xaxis-label {
+  font-size: 10px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .sparkline__tooltip {
   position: absolute;
   bottom: 100%;
@@ -318,15 +336,27 @@ body {
   background: rgba(20, 25, 40, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   white-space: nowrap;
   pointer-events: none;
   margin-bottom: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 10;
+}
+
+.sparkline__tooltip-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.sparkline__tooltip-time {
+  font-size: 10px;
+  color: var(--muted);
 }
 
 .footer {
@@ -398,13 +428,14 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 8px;
+  padding-bottom: 14px;
   transition: height 950ms cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 .podium__rank {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   opacity: 0.95;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1;
 }

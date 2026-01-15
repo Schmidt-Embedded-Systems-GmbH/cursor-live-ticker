@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { fetchConfig, fetchStats } from './api';
 import type { StatsResponse, TickerConfig } from './types';
 import WidgetRenderer from './components/WidgetRenderer';
@@ -20,6 +20,8 @@ export default function App() {
   const [config, setConfig] = useState<TickerConfig | null>(null);
   const [statsResp, setStatsResp] = useState<StatsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<number>(0);
+  const lastFetchRef = useRef<number>(Date.now());
 
   // Load config once
   useEffect(() => {
@@ -51,6 +53,7 @@ export default function App() {
         if (cancelled) return;
         setStatsResp(res);
         setError(null);
+        lastFetchRef.current = Date.now();
       } catch (e: any) {
         if (cancelled) return;
         setError(e?.message ?? String(e));
@@ -67,6 +70,19 @@ export default function App() {
     };
   }, [refreshMs]);
 
+  // Countdown timer
+  useEffect(() => {
+    const tick = () => {
+      const elapsed = Date.now() - lastFetchRef.current;
+      const remaining = Math.max(0, Math.ceil((refreshMs - elapsed) / 1000));
+      setCountdown(remaining);
+    };
+
+    tick();
+    const id = window.setInterval(tick, 200);
+    return () => window.clearInterval(id);
+  }, [refreshMs]);
+
   const title = config?.app.title ?? 'Cursor Live Ticker';
 
   const stats = useMemo(() => statsResp?.stats ?? {}, [statsResp]);
@@ -80,6 +96,7 @@ export default function App() {
             {statsResp ? (
               <>
                 Updated {formatTime(statsResp.generatedAt)} · TZ {statsResp.timezone}
+                <span className="countdown"> · {countdown}s</span>
               </>
             ) : (
               <>Loading…</>
