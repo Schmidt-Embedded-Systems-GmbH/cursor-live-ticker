@@ -1,12 +1,20 @@
 # Cursor Live Ticker
 
-A kiosk / beamer-friendly **“live ticker”** dashboard that shows your Cursor team’s usage in near real time:
+A kiosk / beamer-friendly **"live ticker"** dashboard that shows your Cursor team's usage in near real time:
 - **Tokens** (today + rolling windows)
 - **Cost** (from usage events where available)
 - **Active users**
-- **Top models / top users**
+- **Top models** (with brand-specific colors for Claude, GPT, Gemini, etc.)
+- **Top users podium** (with animated ranking changes)
 - **Cache read share**
-- A few fun “team productivity” signals from Cursor’s **Daily Usage Data** (acceptance rate, lines added, etc.)
+- **Interactive sparkline** (with Y-axis scale, time labels, and hover tooltips)
+- A few fun "team productivity" signals from Cursor's **Daily Usage Data** (acceptance rate, lines added, etc.)
+
+### Live / Daily Toggle
+
+The dashboard has two views:
+- **Live** — Real-time metrics with auto-refresh countdown
+- **Daily** — Comprehensive daily statistics (code activity, AI suggestions, tab completions, feature usage)
 
 This project is designed to be hosted publicly (e.g. on your company GitHub org) while keeping secrets safe:
 ✅ Users run it themselves and provide their own `CURSOR_API_KEY` via env vars.  
@@ -23,7 +31,7 @@ It calls the Cursor **Admin API** endpoints (team admin API key required):
 - `POST /teams/spend`
 - `POST /teams/filtered-usage-events` (for tokens/cost over short windows)
 
-> Note: Cursor’s docs mention that some usage-event data can be **aggregated hourly**; polling more frequently may not always yield newer numbers. This project includes server-side caching so your display can refresh smoothly without hammering the API.
+> Note: Cursor's docs mention that some usage-event data can be **aggregated hourly**; polling more frequently may not always yield newer numbers. This project includes server-side caching so your display can refresh smoothly without hammering the API.
 
 ---
 
@@ -51,7 +59,7 @@ Open: **http://localhost:4000**
 
 ### Docker notes / troubleshooting
 
-- **First build can take a while**: Docker may need to download the Node base image layers the first time, which can look like a “hang”.
+- **First build can take a while**: Docker may need to download the Node base image layers the first time, which can look like a "hang".
 - **If the build looks stuck**: run a plain-progress build to see where time is going:
 
 ```bash
@@ -89,13 +97,23 @@ You can configure:
 - How often the **server** calls Cursor (`data.*.pollIntervalMs`)
 - Dashboard widgets and layout (`dashboard.widgets`)
 
+### Available widget types
+
+| Type | Description |
+|------|-------------|
+| `bigNumber` | Large numeric display (tokens, cost, counts) |
+| `gauge` | Percentage with progress bar (accept rate, cache share) |
+| `sparkline` | Time-series mini chart with Y-axis scale and hover tooltips |
+| `barList` | Ranked list with bars (top models with brand colors) |
+| `podium` | Top 3 users podium with animated ranking changes |
+
 After editing config, restart the server.
 
 ---
 
 ## Security notes
 
-- This repo intentionally **does not** provide a “front-end only” mode.  
+- This repo intentionally **does not** provide a "front-end only" mode.  
   A browser-only approach would expose your API key to anyone who opens DevTools.
 - The server never logs the API key.
 - No data is stored on disk by default (in-memory cache only).
@@ -107,10 +125,13 @@ After editing config, restart the server.
 ```
 cursor-live-ticker/
   client/           # React + Vite UI
+    src/
+      components/   # Widget components (BigNumber, Gauge, Sparkline, BarList, Podium, DailyStatsView)
   server/           # Express API proxy + aggregation
   ticker.config.json
   docker-compose.yml
   Dockerfile
+  .dockerignore
 ```
 
 ---
