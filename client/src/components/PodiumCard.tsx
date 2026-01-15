@@ -132,7 +132,7 @@ export default function PodiumCard(props: { title: string; items: PodiumItem[] |
     // Clear animations after they complete
     const timer = setTimeout(() => {
       setAnimations({ 1: '', 2: '', 3: '' });
-    }, 600);
+    }, 1500);
 
     // Store current positions for next comparison
     prevPositionsRef.current = currentPositions;
