@@ -422,46 +422,63 @@ body {
   flex: 1;
   overflow-y: auto;
   padding-right: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  gap: 20px;
+  align-content: start;
 }
 
 .dailySection {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  background: linear-gradient(180deg, var(--panel), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
 }
 
 .dailySection__title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--muted);
   margin: 0;
-  padding-left: 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
 }
 
 .dailySection__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
+/* Full-width section variant */
+.dailySection--fullWidth {
+  grid-column: 1 / -1;
+}
+
+.dailySection--fullWidth .dailySection__grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .dailyStat {
-  background: linear-gradient(180deg, var(--panel), rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  gap: 6px;
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
 }
 
 .dailyStat:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
@@ -472,11 +489,12 @@ body {
 }
 
 .dailyStat__icon {
-  font-size: 16px;
+  font-size: 15px;
+  opacity: 0.9;
 }
 
 .dailyStat__label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -484,15 +502,15 @@ body {
 }
 
 .dailyStat__value {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--text);
   line-height: 1;
 }
 
 .dailyStat__desc {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
   line-height: 1.3;
 }
 

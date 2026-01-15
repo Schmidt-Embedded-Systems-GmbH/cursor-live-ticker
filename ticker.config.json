@@ -35,7 +35,7 @@
         "valueKey": "tokensToday.total",
         "format": "compact",
         "colSpan": 4,
-        "rowSpan": 2
+        "rowSpan": 3
       },
       {
         "id": "spark_tokens",
@@ -44,7 +44,7 @@
         "seriesKey": "tokensPerMinuteLast60m",
         "valueField": "tokens",
         "colSpan": 4,
-        "rowSpan": 2
+        "rowSpan": 3
       },
       {
         "id": "top_users",
@@ -54,7 +54,7 @@
         "labelField": "email",
         "valueField": "tokens",
         "colSpan": 4,
-        "rowSpan": 2
+        "rowSpan": 3
       },
       {
         "id": "tokens_15m",
@@ -63,7 +63,7 @@
         "valueKey": "tokensLast15m.total",
         "format": "compact",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "tokens_60m",
@@ -72,7 +72,7 @@
         "valueKey": "tokensLast60m.total",
         "format": "compact",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "lines_added",
@@ -81,7 +81,7 @@
         "valueKey": "linesAddedToday",
         "format": "integer",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "active_users",
@@ -90,7 +90,7 @@
         "valueKey": "activeUsersLast60m",
         "format": "integer",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "cost_today",
@@ -100,7 +100,7 @@
         "format": "currency",
         "currency": "USD",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "month_spend",
@@ -110,7 +110,7 @@
         "format": "currency",
         "currency": "USD",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "top_models",
@@ -121,7 +121,7 @@
         "valueField": "tokens",
         "maxItems": 8,
         "colSpan": 6,
-        "rowSpan": 2
+        "rowSpan": 4
       },
       {
         "id": "accept_rate",
@@ -130,7 +130,7 @@
         "valueKey": "acceptanceRateToday",
         "format": "percent",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       },
       {
         "id": "cache_share",
@@ -139,7 +139,7 @@
         "valueKey": "cacheReadShareLast60m",
         "format": "percent",
         "colSpan": 3,
-        "rowSpan": 1
+        "rowSpan": 2
       }
     ]
   }

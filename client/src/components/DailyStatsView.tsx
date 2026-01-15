@@ -24,9 +24,9 @@ function StatCard({ label, value, format = 'integer', icon, description }: StatC
   );
 }
 
-function StatSection({ title, children }: { title: string; children: React.ReactNode }) {
+function StatSection({ title, children, fullWidth }: { title: string; children: React.ReactNode; fullWidth?: boolean }) {
   return (
-    <div className="dailySection">
+    <div className={`dailySection ${fullWidth ? 'dailySection--fullWidth' : ''}`}>
       <h3 className="dailySection__title">{title}</h3>
       <div className="dailySection__grid">{children}</div>
     </div>
@@ -168,7 +168,7 @@ export default function DailyStatsView({ stats }: { stats: Record<string, unknow
         />
       </StatSection>
 
-      <StatSection title="Request Types">
+      <StatSection title="Request Types" fullWidth>
         <StatCard 
           label="Subscription Included" 
           value={daily.subscriptionIncludedReqs} 
