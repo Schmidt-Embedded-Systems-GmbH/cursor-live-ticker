@@ -241,8 +241,47 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.sparkline__yaxis {
+  display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 2px 0;
+  flex-shrink: 0;
+  width: 36px;
+}
+
+.sparkline__yaxis-label {
+  font-size: 10px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.sparkline__chart {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.sparkline__gridlines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.sparkline__gridline {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .sparkline__bars {
@@ -250,8 +289,9 @@ body {
   flex: 1;
   min-height: 80px;
   display: flex;
-  gap: 3px;
+  gap: 2px;
   align-items: flex-end;
+  position: relative;
 }
 
 .sparkline__bar {
@@ -259,8 +299,34 @@ body {
   min-width: 2px;
   border-radius: 3px 3px 0 0;
   background: rgba(152, 255, 193, 0.65);
-  transition: height 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
-  opacity: 0.9;
+  transition: height 700ms cubic-bezier(0.2, 0.9, 0.2, 1),
+              background 150ms ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.sparkline__bar:hover,
+.sparkline__bar--hovered {
+  background: rgba(152, 255, 193, 0.95);
+}
+
+.sparkline__tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 25, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  white-space: nowrap;
+  pointer-events: none;
+  margin-bottom: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 .footer {
