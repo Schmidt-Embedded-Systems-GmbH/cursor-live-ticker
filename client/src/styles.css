@@ -439,3 +439,63 @@ body {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   line-height: 1;
 }
+
+.podium__userContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Podium swap animations */
+.podium__place--slideFromLeft {
+  animation: podiumSlideFromLeft 600ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.podium__place--slideFromRight {
+  animation: podiumSlideFromRight 600ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.podium__place--fadeIn {
+  animation: podiumFadeIn 600ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@keyframes podiumSlideFromLeft {
+  0% {
+    opacity: 0.5;
+    transform: translateX(-30px) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes podiumSlideFromRight {
+  0% {
+    opacity: 0.5;
+    transform: translateX(30px) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes podiumFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

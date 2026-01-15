@@ -1,13 +1,11 @@
 import WidgetFrame from './WidgetFrame';
 import { formatValue } from '../utils/format';
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 
 export type PodiumItem = { label: string; value: number };
 
 function extractName(email: string): string {
-  // Try to get a readable name from email (before @)
   const local = email.split('@')[0] ?? email;
-  // Replace dots/underscores with spaces and capitalize
   return local
     .replace(/[._]/g, ' ')
     .split(' ')
@@ -15,16 +13,20 @@ function extractName(email: string): string {
     .join(' ');
 }
 
+type Position = 1 | 2 | 3;
+
 function Place({
   rank,
   item,
   height,
+  animationClass,
 }: {
-  rank: 1 | 2 | 3;
+  rank: Position;
   item: PodiumItem | null;
   height: number;
+  animationClass: string;
 }) {
-  const colors: Record<1 | 2 | 3, { bg: string; border: string; glow: string; text: string }> = {
+  const colors: Record<Position, { bg: string; border: string; glow: string; text: string }> = {
     1: {
       bg: 'linear-gradient(180deg, rgba(255, 215, 80, 0.32) 0%, rgba(255, 180, 50, 0.18) 100%)',
       border: 'rgba(255, 200, 100, 0.5)',
@@ -48,15 +50,15 @@ function Place({
   const c = colors[rank];
 
   return (
-    <div className="podium__place" data-rank={rank}>
+    <div className={`podium__place ${animationClass}`} data-rank={rank}>
       <div className="podium__user">
         {item ? (
-          <>
+          <div className="podium__userContent" key={item.label}>
             <div className="podium__name" title={item.label}>
               {extractName(item.label)}
             </div>
             <div className="podium__tokens">{formatValue(item.value, 'compact')}</div>
-          </>
+          </div>
         ) : (
           <div className="podium__empty">—</div>
         )}
@@ -85,10 +87,62 @@ export default function PodiumCard(props: { title: string; items: PodiumItem[] |
   const second = items[1] ?? null;
   const third = items[2] ?? null;
 
+  // Track previous positions for swap detection
+  const prevPositionsRef = useRef<Record<string, Position>>({});
+  const [animations, setAnimations] = useState<Record<Position, string>>({
+    1: '',
+    2: '',
+    3: '',
+  });
+
+  // Detect position changes and trigger animations
+  useEffect(() => {
+    const currentPositions: Record<string, Position> = {};
+    const newAnimations: Record<Position, string> = { 1: '', 2: '', 3: '' };
+
+    // Build current position map
+    if (first?.label) currentPositions[first.label] = 1;
+    if (second?.label) currentPositions[second.label] = 2;
+    if (third?.label) currentPositions[third.label] = 3;
+
+    // Check for swaps
+    const prevPos = prevPositionsRef.current;
+
+    // For each current user, check if they moved from a different position
+    Object.entries(currentPositions).forEach(([label, newPos]) => {
+      const oldPos = prevPos[label];
+      if (oldPos && oldPos !== newPos) {
+        // User moved! Determine animation direction
+        if (oldPos < newPos) {
+          // Moved down (e.g., 1 -> 2): slide from left
+          newAnimations[newPos] = 'podium__place--slideFromLeft';
+        } else {
+          // Moved up (e.g., 2 -> 1): slide from right
+          newAnimations[newPos] = 'podium__place--slideFromRight';
+        }
+      } else if (!oldPos && label) {
+        // New user appeared
+        newAnimations[newPos] = 'podium__place--fadeIn';
+      }
+    });
+
+    // Update animations
+    setAnimations(newAnimations);
+
+    // Clear animations after they complete
+    const timer = setTimeout(() => {
+      setAnimations({ 1: '', 2: '', 3: '' });
+    }, 600);
+
+    // Store current positions for next comparison
+    prevPositionsRef.current = currentPositions;
+
+    return () => clearTimeout(timer);
+  }, [first?.label, second?.label, third?.label]);
+
   // Calculate heights based on relative values
-  // 1st place is always max height, others scale proportionally
   const maxHeight = 150;
-  const minHeight = 50; // Minimum height so bars are always visible
+  const minHeight = 50;
 
   const heights = useMemo(() => {
     const firstVal = first?.value ?? 0;
@@ -96,11 +150,9 @@ export default function PodiumCard(props: { title: string; items: PodiumItem[] |
     const thirdVal = third?.value ?? 0;
 
     if (firstVal === 0) {
-      // No data - use default heights
       return { 1: maxHeight, 2: 70, 3: 45 };
     }
 
-    // Scale relative to first place
     const scaleHeight = (val: number) => {
       if (val === 0) return minHeight;
       const ratio = val / firstVal;
@@ -117,9 +169,9 @@ export default function PodiumCard(props: { title: string; items: PodiumItem[] |
   return (
     <WidgetFrame title={props.title} subtitle={props.hint}>
       <div className="podium">
-        <Place rank={2} item={second} height={heights[2]} />
-        <Place rank={1} item={first} height={heights[1]} />
-        <Place rank={3} item={third} height={heights[3]} />
+        <Place rank={2} item={second} height={heights[2]} animationClass={animations[2]} />
+        <Place rank={1} item={first} height={heights[1]} animationClass={animations[1]} />
+        <Place rank={3} item={third} height={heights[3]} animationClass={animations[3]} />
       </div>
     </WidgetFrame>
   );
