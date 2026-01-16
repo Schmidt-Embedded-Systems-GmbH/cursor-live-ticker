@@ -64,14 +64,13 @@ export default function SparklineCard(props: {
                       onMouseEnter={() => setHoveredIndex(idx)}
                       onMouseLeave={() => setHoveredIndex(null)}
                     >
-                      {isHovered && (
-                        <div className="sparkline__tooltip">
-                          <span className="sparkline__tooltip-value">{formatCompact(v)}</span>
-                          <span className="sparkline__tooltip-time">
-                            {minutesAgo === 0 ? 'now' : `${minutesAgo}m ago`}
-                          </span>
-                        </div>
-                      )}
+                      {/* Tooltip is always rendered, visibility controlled by CSS */}
+                      <div className={`sparkline__tooltip ${isHovered ? 'sparkline__tooltip--visible' : ''}`}>
+                        <span className="sparkline__tooltip-value">{formatCompact(v)}</span>
+                        <span className="sparkline__tooltip-time">
+                          {minutesAgo === 0 ? 'now' : `${minutesAgo}m ago`}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
