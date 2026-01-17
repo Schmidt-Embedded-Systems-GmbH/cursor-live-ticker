@@ -12,21 +12,17 @@ ENV CI=true \
     npm_config_progress=false \
     npm_config_loglevel=info
 
-# Install deps per workspace (avoids relying on npm workspaces in Docker layers)
+# Copy lockfile and all package.json files for workspace install
+COPY package.json package-lock.json ./
 COPY client/package.json ./client/package.json
-WORKDIR /app/client
-RUN --mount=type=cache,target=/root/.npm npm install
-
-WORKDIR /app
 COPY server/package.json ./server/package.json
-WORKDIR /app/server
-RUN --mount=type=cache,target=/root/.npm npm install
+
+# Install all dependencies using lockfile (deterministic)
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 # Copy sources + build
-WORKDIR /app
 COPY . .
-RUN cd client && npm run build
-RUN cd server && npm run build
+RUN npm run build
 
 # Runtime image: only server prod deps + built assets
 FROM node:20-slim AS runner
@@ -39,13 +35,14 @@ ENV NODE_ENV=production \
     npm_config_progress=false \
     npm_config_loglevel=info
 
-# Install only server production dependencies
+# Copy lockfile and package files for deterministic prod install
+COPY package.json package-lock.json ./
 COPY server/package.json ./server/package.json
-WORKDIR /app/server
-RUN --mount=type=cache,target=/root/.npm npm install --omit=dev
+
+# Install only server production dependencies using lockfile
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev --workspace=server
 
 # Copy built artifacts
-WORKDIR /app
 COPY --from=build /app/server/dist ./server/dist
 COPY --from=build /app/dist/client ./dist/client
 COPY ticker.config.json ./ticker.config.json

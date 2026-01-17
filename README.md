@@ -59,6 +59,7 @@ Open: **http://localhost:4000**
 
 ### Docker notes / troubleshooting
 
+- **Deterministic builds**: Docker uses `npm ci` with `package-lock.json` for reproducible installs.
 - **First build can take a while**: Docker may need to download the Node base image layers the first time, which can look like a "hang".
 - **If the build looks stuck**: run a plain-progress build to see where time is going:
 
@@ -67,7 +68,27 @@ docker compose build --no-cache --progress=plain
 ```
 
 - **Build context is intentionally small**: this repo includes a `.dockerignore` so `node_modules/`, `dist/`, and `.env*` are not sent into the Docker build context.
-- **Tip**: adding a lockfile (e.g. `package-lock.json`) makes Docker installs faster and deterministic.
+
+### LAN exposure
+
+By default, `docker-compose.yml` binds to **localhost only** (`127.0.0.1`), meaning the dashboard is only accessible from the host machine.
+
+To expose on your local network (e.g., for a Raspberry Pi kiosk or beamer):
+
+```yaml
+# docker-compose.yml
+ports:
+  - "${PORT:-4000}:4000"  # Exposed to LAN
+```
+
+Or explicitly bind to all interfaces:
+
+```yaml
+ports:
+  - "0.0.0.0:${PORT:-4000}:4000"
+```
+
+> ⚠️ **Warning**: Exposing to LAN means anyone on your network can access the dashboard. Make sure your network is trusted or add authentication if needed.
 
 ---
 

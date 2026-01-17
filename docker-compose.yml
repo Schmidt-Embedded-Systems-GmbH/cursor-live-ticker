@@ -5,4 +5,4 @@ services:
     environment:
       - NODE_ENV=production
     ports:
-      - "${PORT:-4000}:4000"
+      - "127.0.0.1:${PORT:-4000}:4000"
