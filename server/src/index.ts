@@ -4,10 +4,68 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { DateTime } from 'luxon';
 
-import { loadEnv, loadTickerConfig } from './config';
+import { loadEnv, loadTickerConfig, TickerConfig } from './config';
 import { CursorAdminClient } from './cursorClient';
 import { AsyncCache } from './cache';
-import { computeStats } from './stats';
+import { computeStats, ComputedStats } from './stats';
+
+type EmailMode = TickerConfig['privacy']['emailMode'];
+
+/**
+ * Transform an email based on the privacy mode
+ */
+function transformEmail(email: string, mode: EmailMode): string {
+  if (!email || typeof email !== 'string') return 'Anonymous';
+
+  const atIndex = email.indexOf('@');
+  const localPart = atIndex > 0 ? email.slice(0, atIndex) : email;
+  const domain = atIndex > 0 ? email.slice(atIndex) : '';
+
+  switch (mode) {
+    case 'full':
+      return email;
+
+    case 'masked': {
+      if (localPart.length <= 1) return `${localPart}***${domain}`;
+      return `${localPart[0]}***${domain}`;
+    }
+
+    case 'firstNameOnly': {
+      // Try to extract first name from email (e.g., john.doe@ -> John)
+      const namePart = localPart.split(/[._-]/)[0] ?? localPart;
+      if (!namePart) return 'User';
+      return namePart.charAt(0).toUpperCase() + namePart.slice(1).toLowerCase();
+    }
+
+    case 'initials': {
+      // Try to extract initials (e.g., john.doe@ -> JD)
+      const parts = localPart.split(/[._-]/).filter(Boolean);
+      if (parts.length === 0) return '??';
+      const initials = parts.map((p) => p.charAt(0).toUpperCase()).join('');
+      return initials.slice(0, 2) || '??';
+    }
+
+    default:
+      return email;
+  }
+}
+
+/**
+ * Apply privacy transformation to stats
+ */
+function applyPrivacy(stats: ComputedStats, mode: EmailMode): ComputedStats {
+  return {
+    ...stats,
+    topUsersLast60m: stats.topUsersLast60m.map((u) => ({
+      ...u,
+      email: transformEmail(u.email, mode),
+    })),
+    topSpendersMonth: stats.topSpendersMonth.map((s) => ({
+      ...s,
+      email: transformEmail(s.email, mode),
+    })),
+  };
+}
 
 function extractUsageEvents(resp: any): any[] {
   if (!resp || typeof resp !== 'object') return [];
@@ -124,7 +182,7 @@ async function main() {
 
       const members = await cache.get('members', tickerConfig.data.members.pollIntervalMs, async () => client.getMembers());
 
-      const stats = computeStats({
+      const rawStats = computeStats({
         timezone,
         nowMs,
         usageEvents: usage.value,
@@ -134,6 +192,9 @@ async function main() {
         shortWindowMinutes: tickerConfig.data.usageEvents.shortWindowMinutes,
         longWindowMinutes: tickerConfig.data.usageEvents.longWindowMinutes,
       });
+
+      // Apply privacy transformation based on config
+      const stats = applyPrivacy(rawStats, tickerConfig.privacy.emailMode);
 
       res.json({
         generatedAt: nowMs,

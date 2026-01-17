@@ -4,6 +4,9 @@
     "refreshIntervalMs": 5000,
     "timezone": "UTC"
   },
+  "privacy": {
+    "emailMode": "firstNameOnly"
+  },
   "data": {
     "usageEvents": {
       "pollIntervalMs": 60000,

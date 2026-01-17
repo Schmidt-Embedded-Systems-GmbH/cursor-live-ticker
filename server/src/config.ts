@@ -37,6 +37,16 @@ const TickerConfigSchema = z.object({
     refreshIntervalMs: z.number().int().positive().default(5000),
     timezone: z.string().optional().default('UTC'),
   }),
+  privacy: z
+    .object({
+      // How to display emails/user identifiers
+      // - "full": show full email (john.doe@example.com)
+      // - "masked": show partial (j***@example.com)
+      // - "firstNameOnly": extract first name (John)
+      // - "initials": show initials (JD)
+      emailMode: z.enum(['full', 'masked', 'firstNameOnly', 'initials']).default('masked'),
+    })
+    .default({}),
   data: z.object({
     usageEvents: z.object({
       pollIntervalMs: z.number().int().positive().default(60000),

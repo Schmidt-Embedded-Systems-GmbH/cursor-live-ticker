@@ -111,6 +111,27 @@ After editing config, restart the server.
 
 ---
 
+## Privacy
+
+The dashboard displays user activity (top users, top spenders). To avoid "name-and-shame" situations or accidentally leaking emails, configure the `privacy.emailMode` option in `ticker.config.json`:
+
+| Mode | Example Output | Use Case |
+|------|----------------|----------|
+| `full` | `john.doe@example.com` | Internal team only |
+| `masked` | `j***@example.com` | Semi-anonymous |
+| `firstNameOnly` | `John` | Friendly, screenshot-safe (default) |
+| `initials` | `JD` | Most anonymous |
+
+```json
+{
+  "privacy": {
+    "emailMode": "firstNameOnly"
+  }
+}
+```
+
+---
+
 ## Security notes
 
 - This repo intentionally **does not** provide a "front-end only" mode.  
