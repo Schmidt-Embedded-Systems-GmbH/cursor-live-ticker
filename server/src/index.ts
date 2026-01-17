@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import { DateTime } from 'luxon';
 
 import { loadEnv, loadTickerConfig, TickerConfig } from './config';
-import { CursorAdminClient } from './cursorClient';
+import { CursorAdminClient, RateLimitError, TimeoutError } from './cursorClient';
 import { AsyncCache } from './cache';
 import { computeStats, ComputedStats } from './stats';
 
@@ -196,6 +196,13 @@ async function main() {
       // Apply privacy transformation based on config
       const stats = applyPrivacy(rawStats, tickerConfig.privacy.emailMode);
 
+      // Check for rate limit warnings
+      const warnings: string[] = [];
+      if (client.rateLimitedUntil && client.rateLimitedUntil > nowMs) {
+        const secondsLeft = Math.ceil((client.rateLimitedUntil - nowMs) / 1000);
+        warnings.push(`Rate limited by Cursor API (retry in ${secondsLeft}s)`);
+      }
+
       res.json({
         generatedAt: nowMs,
         timezone,
@@ -206,10 +213,23 @@ async function main() {
           spend: { fetchedAt: spend.fetchedAt, rows: (spend.value as any)?.teamMemberSpend?.length ?? 0 },
           members: { fetchedAt: members.fetchedAt, rows: (members.value as any)?.teamMembers?.length ?? 0 },
         },
+        warnings: warnings.length > 0 ? warnings : undefined,
       });
     } catch (e: any) {
-      res.status(500).json({
-        error: e?.message ?? String(e),
+      // Provide specific error messages for known error types
+      let errorMessage = e?.message ?? String(e);
+      let statusCode = 500;
+
+      if (e instanceof RateLimitError) {
+        errorMessage = 'Cursor API rate limit exceeded. Data may be stale. Please wait before refreshing.';
+        statusCode = 429;
+      } else if (e instanceof TimeoutError) {
+        errorMessage = 'Cursor API request timed out. The API may be slow or unavailable.';
+        statusCode = 504;
+      }
+
+      res.status(statusCode).json({
+        error: errorMessage,
       });
     }
   });

@@ -154,6 +154,15 @@ body {
   font-size: 14px;
 }
 
+.warningBanner {
+  border: 1px solid rgba(255, 200, 100, 0.35);
+  background: rgba(255, 200, 100, 0.10);
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: rgba(255, 240, 200, 0.95);
+  font-size: 14px;
+}
+
 .dashboard {
   flex: 1;
   display: grid;

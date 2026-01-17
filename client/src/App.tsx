@@ -129,6 +129,9 @@ export default function App() {
       </header>
 
       {error ? <ErrorBanner message={error} /> : null}
+      {statsResp?.warnings?.map((w, i) => (
+        <div key={i} className="warningBanner">⚠️ {w}</div>
+      ))}
 
       {viewMode === 'live' ? (
         <main
