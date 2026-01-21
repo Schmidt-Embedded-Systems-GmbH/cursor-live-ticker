@@ -18,6 +18,14 @@ function formatTime(ts: number): string {
 }
 
 type ViewMode = 'live' | 'daily';
+type Theme = 'dark' | 'light';
+
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  const stored = localStorage.getItem('theme');
+  if (stored === 'light' || stored === 'dark') return stored;
+  return 'dark';
+}
 
 export default function App() {
   const [config, setConfig] = useState<TickerConfig | null>(null);
@@ -25,7 +33,16 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(0);
   const [viewMode, setViewMode] = useState<ViewMode>('live');
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const lastFetchRef = useRef<number>(Date.now());
+
+  // Apply theme to html element
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   // Load config once
   useEffect(() => {
@@ -125,6 +142,9 @@ export default function App() {
               Daily
             </button>
           </div>
+          <button className="themeToggle" onClick={toggleTheme} title="Toggle theme">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
         </div>
       </header>
 
