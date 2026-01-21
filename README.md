@@ -1,9 +1,21 @@
 # Cursor Live Ticker
 
-A beamer / kiosk-friendly dashboard that visualizes your **Cursor team** usage in near real time:
-tokens, activity, top models, and a few daily “productivity” signals.
+A beamer / kiosk-friendly dashboard that visualizes your **Cursor team** usage in near real time.
 
-> Not affiliated with Cursor. Uses the Cursor Teams/Admin API.
+https://github.com/user-attachments/assets/ca0eb9bf-11d0-4548-a64a-77d118fd57b3
+
+### What you get
+
+- 📊 **Real-time token usage** — see who's using what, right now
+- 🏆 **Leaderboards** — top users & spenders with animated podiums
+- 📈 **Sparkline charts** — tokens/min over the last 60 minutes
+- 🌙 **Dark & light mode** — toggle with one click
+- 🔒 **Privacy modes** — mask emails for public displays
+- 🐳 **One-command deploy** — Docker or Node, your choice
+
+> **Note:** Not affiliated with Cursor. Uses the [Cursor Teams/Admin API](https://docs.cursor.com).
+
+---
 
 ## Quick start (Docker)
 
@@ -27,7 +39,7 @@ Open: `http://localhost:4000`
 ### LAN note
 
 `docker compose` binds to **localhost only** by default (`127.0.0.1`).  
-To expose on your local network (e.g., for a Raspberry Pi kiosk), remove the prefix:
+To expose on your local network (e.g., for a kiosk display), remove the prefix:
 
 ```yaml
 ports:
